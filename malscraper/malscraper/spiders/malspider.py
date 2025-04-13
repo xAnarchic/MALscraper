@@ -3,6 +3,7 @@
 import scrapy
 import sys
 import re
+from malscraper.items import MalItem
 
 class MALSpider(scrapy.Spider):
     name = 'malspider'
@@ -27,26 +28,29 @@ class MALSpider(scrapy.Spider):
             sys.exit
 
 
-
-
     def parse_anime(self, response):
 
         info = response.css('div.spaceit_pad::text').getall()   # list of info about anime
-        for item in info:   # iterating over items in the list
-            if re.search('[0-9]+', item) != None:   # looking for an item with numbers inside ------- try to find a pattern specific to the episode info, like spaces, starting characters, ending characters, etc
-                episode = item  # assigns item with the 'episode' variable
-                break   # as soon as an item is found, the loop ends
+        mal_item = MalItem()
 
 
-        yield {
-            'jp title' : response.css('h1.title-name.h1_bold_none strong::text').get(),
-            'eng title' : response.css('p.title-english.title-inherit::text').get(),
-            'show type' : response.css('div.spaceit_pad a::text').getall()[0],
-            'episodes' :  episode    # needs regex to only return numbers
-        }
+        for item in info:   # iterating over different bits of information within the list
+            if re.search('^\n..[0-9]+\n', item) != None:   # locates the episode info using the pattern it presents with
+                episode_num = item.strip()  # after removing the whitespaces from the episode info, the 'episode' variable is assigned the episode number
+                break   # only looks for the first instance of the pattern before closing the loop
+            else:
+                episode_num = 'Unknown/ Still airing'   # if the pattern is not found then the anime has yet to finish
 
 
-# if __name__ == '__main__':
-#     pass
+
+        mal_item['jp_title'] = response.css('h1.title-name.h1_bold_none strong::text').get(),
+        mal_item['eng_title'] = response.css('p.title-english.title-inherit::text').get(),
+        mal_item['show_type'] = response.css('div.spaceit_pad a::text').getall()[0],
+        mal_item['episode_num'] =  episode_num
+
+        yield mal_item
+
+if __name__ == '__main__':
+    pass
 
 
