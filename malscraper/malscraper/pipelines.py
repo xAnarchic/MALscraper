@@ -17,7 +17,14 @@ class MalscraperPipeline:
         eng_title = adapter.get('eng_title')
         if eng_title[0] == None:
             adapter['eng_title'] = 'N/A'
+        else:
+            adapter['eng_title'] = eng_title[0]
 
+        jp_title = adapter.get('jp_title')
+        adapter['jp_title'] = jp_title[0]
+
+        show_type = adapter.get('show_type')
+        adapter['show_type'] = show_type[0]
 
         return item
 
@@ -42,7 +49,7 @@ class ImportToMySQLPipeline:
                 primary key (id)
                 )""")
 
-    def insert_anime(self,item, spider):
+    def process_item(self, item, spider):
 
         self.cursor.execute("""
             INSERT into anime(
