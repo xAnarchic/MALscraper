@@ -16,15 +16,18 @@ NEWSPIDER_MODULE = "malscraper.spiders"
 #    'malanime.csv' : {'format' : 'csv', 'overwrite' : True}
 # }
 
+# SCRAPEOPS_API_KEY = 'aa6d77f5-6e12-47ac-bb2e-3e99d269ffa5'
+# SCRAPEOPS_PROXY_ENABLED = True
+# SCRAPEOPS_PROXY_SETTINGS = {'country' : 'gb'}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "malscraper (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -54,9 +57,11 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    "malscraper.middlewares.MalscraperDownloaderMiddleware": 543,
-#}
+
+DOWNLOADER_MIDDLEWARES = {
+#   "malscraper.middlewares.MalscraperDownloaderMiddleware": 543,
+#   "scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk": 725
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html

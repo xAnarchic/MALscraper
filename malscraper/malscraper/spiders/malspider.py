@@ -1,28 +1,30 @@
 # Spider
-
+from typing import Iterable
+from urllib.parse import urlencode
 import scrapy
 import sys
 import re
-from malscraper.items import MalItem
+from malscraper.items import MalItem, MalscraperItem
+from scrapy import Request
+import time
+
 
 class MALSpider(scrapy.Spider):
     name = 'malspider'
-    allowed_domains = ['myanimelist.net']
-    start_urls = ['https://myanimelist.net/topanime.php']   # orders all anime on the website by score
+    allowed_domains = ['myanimelist.net', 'proxy.scrapeops.io']
+    start_urls = ['https://myanimelist.net/topanime.php?limit=150']   # orders all anime on the website by score
 
     def parse(self, response):
         animes = response.css('tr.ranking-list')    # returns a list of the 50 anime found on each page
-
-        for anime in animes:    # iterating through each anime to get information
-
+        for anime in animes:  # iterating through each anime to get information
             relative_url = anime.css('h3.fl-l.fs14.fw-b.anime_ranking_h3 a::attr(href)').get()
-            yield response.follow(relative_url, callback=self.parse_anime)
+            yield response.follow(url = relative_url, callback=self.parse_anime, dont_filter = True)
 
         next_page = response.css('div.di-b.ac.pt16.pb16.pagination.icon-top-ranking-page-bottom a::attr(href)').getall()[-1]  # specifically gets the link to the next page of anime, avoids the "prev page" link
         next_page_url = 'https://myanimelist.net/topanime.php' + next_page
 
-        if next_page_url != None:
-            yield response.follow(next_page_url, callback = self.parse)
+        if next_page != '?limit=300':
+            yield response.follow(url = next_page_url, callback = self.parse)
         else:
             print('All pages scraped. Script will now be terminated')
             sys.exit

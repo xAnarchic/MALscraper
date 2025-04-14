@@ -8,8 +8,8 @@ import scrapy
 
 class MalscraperItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    rel_url = scrapy.Field()
+
 
 
 class MalItem(scrapy.Item):
