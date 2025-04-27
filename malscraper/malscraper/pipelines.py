@@ -96,7 +96,7 @@ class ImportToMySQLPipeline:
                 ranking INT,
                 popularity INT,
                 studio VARCHAR(255),
-                genres VARCHAR(255),
+                genres VARCHAR(255), 
                 themes VARCHAR(255),
                 demographics VARCHAR(255),
                 primary key (id)
