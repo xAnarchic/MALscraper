@@ -1,18 +1,18 @@
 # Spider
 from typing import Iterable
-from urllib.parse import urlencode
+
 import scrapy
 import sys
 import re
 from malscraper.items import MalItem, MalscraperItem
 from scrapy import Request
-import time
 
 
 class MALSpider(scrapy.Spider):
     name = 'malspider'
     allowed_domains = ['myanimelist.net', 'proxy.scrapeops.io']
-    start_urls = ['https://myanimelist.net/topanime.php?limit=150']   # orders all anime on the website by score
+    start_urls = ['https://myanimelist.net/topanime.php?limit=800']   # orders all anime on the website by score
+
 
     def parse(self, response):
         animes = response.css('tr.ranking-list')    # returns a list of the 50 anime found on each page
@@ -23,10 +23,9 @@ class MALSpider(scrapy.Spider):
         next_page = response.css('div.di-b.ac.pt16.pb16.pagination.icon-top-ranking-page-bottom a::attr(href)').getall()[-1]  # specifically gets the link to the next page of anime, avoids the "prev page" link
         next_page_url = 'https://myanimelist.net/topanime.php' + next_page
 
-        if next_page != '?limit=300':
+        if next_page != '?limit=1000':
             yield response.follow(url = next_page_url, callback = self.parse)
         else:
-            print('All pages scraped. Script will now be terminated')
             sys.exit
 
 
@@ -45,12 +44,20 @@ class MALSpider(scrapy.Spider):
 
 
 
+
         mal_item['jp_title'] = response.css('h1.title-name.h1_bold_none strong::text').get(),
         mal_item['eng_title'] = response.css('p.title-english.title-inherit::text').get(),
         mal_item['show_type'] = response.css('div.spaceit_pad a::text').getall()[0],
         mal_item['episode_num'] =  episode_num
+        mal_item['score'] = response.css('div.fl-l.score div::text').get()
+        mal_item['ranking'] = response.css('span.numbers.ranked strong::text').get()[1:]
+        mal_item['popularity'] = response.css('span.numbers.popularity strong::text').get()[1:]
+        mal_item['studio'] = response.css('span.information.studio.author a::text').get()
+        mal_item['genres_themes'] = response.css('span[itemprop=genre]::text').getall()
 
         yield mal_item
+
+
 
 if __name__ == '__main__':
     pass
