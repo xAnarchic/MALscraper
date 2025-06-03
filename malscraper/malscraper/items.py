@@ -25,3 +25,15 @@ class MalItem(scrapy.Item):
     genres = scrapy.Field()
     themes = scrapy.Field()
     demographics = scrapy.Field()
+    synopsis = scrapy.Field()
+    link = scrapy.Field()
+    episode = scrapy.Field()
+
+class Mal1Item(scrapy.Item):
+    episode = scrapy.Field()
+    episode_title = scrapy.Field()
+    episode_date_aired = scrapy.Field()
+    episode_score = scrapy.Field()
+    jp_title = scrapy.Field()
+
+

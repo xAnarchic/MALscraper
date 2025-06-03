@@ -22,6 +22,7 @@ NEWSPIDER_MODULE = "malscraper.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "malscraper (+http://www.yourdomain.com)"
+#USER_AGENT = "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -38,7 +39,7 @@ CONCURRENT_REQUESTS = 1
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -73,7 +74,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    "malscraper.pipelines.MalscraperPipeline": 300,
-   "malscraper.pipelines.ImportToMySQLPipeline": 400,
+  # "malscraper.pipelines.Malscraper1Pipeline": 400,
+   "malscraper.pipelines.ImportToMySQLPipeline": 500,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
