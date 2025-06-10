@@ -73,7 +73,7 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    "malscraper.pipelines.MalscraperPipeline": 300,
-   "malscraper.pipelines.ImportToMySQLPipeline": 500,
+   "malscraper.pipelines.ImportToMySQLPipeline": 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
