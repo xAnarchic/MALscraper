@@ -1,0 +1,162 @@
+CREATE TABLE titles (
+SELECT id, jp_title, eng_title
+FROM general_anime_info);
+
+ALTER TABLE titles
+ADD PRIMARY KEY (id);
+
+CREATE TABLE show_info (
+SELECT id, episode_num, show_type, studio
+FROM general_anime_info);
+
+ALTER TABLE show_info
+ADD CONSTRAINT fk_info_id
+FOREIGN KEY(id) REFERENCES titles(id);
+
+CREATE TABLE demographics (
+SELECT id, demographics
+FROM general_anime_info);
+
+ALTER TABLE demographics
+ADD CONSTRAINT fk_demo_id
+FOREIGN KEY(id) REFERENCES titles(id);
+
+CREATE TABLE show_stats (
+SELECT id, score, ranking, popularity
+FROM general_anime_info);
+
+ALTER TABLE show_stats
+ADD CONSTRAINT fk_stats_id
+FOREIGN KEY (id) REFERENCES titles(id);
+
+CREATE TABLE genre1(
+SELECT id, genre1
+FROM (
+SELECT id, genres, SUBSTRING_INDEX(genres, ', ', 1) genre1
+FROM general_anime_info) foo
+WHERE genre1 != 'N/A');
+
+CREATE TABLE genre2(
+SELECT id, genre2
+FROM (
+SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 1) = SUBSTRING_INDEX((SUBSTRING_INDEX(genres, ', ', 2)), ', ', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(genres, ', ', 2), ', ', -1) END genre2
+FROM general_anime_info) foo
+WHERE genre2 != 'N/A'); 
+
+CREATE TABLE genre3(
+SELECT id, genre3
+FROM (
+SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 2) = SUBSTRING_INDEX((SUBSTRING_INDEX(genres, ', ', 3)), ', ', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(genres, ', ', 3), ', ', -1) END genre3
+FROM general_anime_info) foo
+WHERE genre3 != 'N/A'); 
+
+CREATE TABLE genre4(
+SELECT id, genre4
+FROM (
+SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 3) = SUBSTRING_INDEX((SUBSTRING_INDEX(genres, ', ', 4)), ', ', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(genres, ', ', 4), ', ', -1) END genre4
+FROM general_anime_info) foo
+WHERE genre4 != 'N/A'); 
+
+CREATE TABLE genre5(
+SELECT id, genre5
+FROM (
+SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 4) = SUBSTRING_INDEX((SUBSTRING_INDEX(genres, ', ', 5)), ', ', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(genres, ', ', 5), ', ', -1) END genre5
+FROM general_anime_info) foo
+WHERE genre5 != 'N/A'); 
+
+CREATE TABLE genre6(
+SELECT id, genre6
+FROM (
+SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 5) = SUBSTRING_INDEX((SUBSTRING_INDEX(genres, ', ', 6)), ', ', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(genres, ', ', 6), ', ', -1) END genre6
+FROM general_anime_info) foo
+WHERE genre6 != 'N/A'); 
+
+CREATE TABLE genre7(
+SELECT id, genre7
+FROM (
+SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 6) = SUBSTRING_INDEX((SUBSTRING_INDEX(genres, ', ', 7)), ', ', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(genres, ', ', 7), ', ', -1) END genre7
+FROM general_anime_info) foo
+WHERE genre7 != 'N/A'); 
+
+CREATE TABLE genre8(
+SELECT id, genre8
+FROM (
+SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 7) = SUBSTRING_INDEX((SUBSTRING_INDEX(genres, ', ', 8)), ', ', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(genres, ', ', 8), ', ', -1) END genre8
+FROM general_anime_info) foo
+WHERE genre8 != 'N/A'); 
+
+CREATE TABLE IF NOT EXISTS genres (
+SELECT id, genre1 Genres FROM genre1
+UNION 
+SELECT * FROM genre2
+UNION 
+SELECT * FROM genre3
+UNION 
+SELECT * FROM genre4
+UNION 
+SELECT * FROM genre5
+UNION 
+SELECT * FROM genre6
+UNION 
+SELECT * FROM genre7
+UNION 
+SELECT * FROM genre8);
+
+DROP TABLE genre1, genre2, genre3, genre4, genre5, genre6, genre7, genre8;
+
+CREATE TABLE theme1(
+SELECT id, theme
+FROM (
+SELECT id, themes, SUBSTRING_INDEX(themes, ',', 1) theme
+FROM general_anime_info) foo
+WHERE theme != 'N/A');
+
+CREATE TABLE theme2(
+SELECT id, theme2
+FROM (
+SELECT id, themes, CASE WHEN SUBSTRING_INDEX(themes, ',', 1) = SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 2), ',', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 2), ', ', -1) END theme2
+FROM general_anime_info) foo
+WHERE theme2 != 'N/A'); 
+
+CREATE TABLE theme3(
+SELECT id, theme3
+FROM (
+SELECT id, themes, CASE WHEN SUBSTRING_INDEX(themes, ',', 2) = SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 3), ',', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 3), ', ', -1) END theme3
+FROM general_anime_info) foo
+WHERE theme3 != 'N/A');
+
+CREATE TABLE theme4(
+SELECT id, theme4
+FROM (
+SELECT id, themes, CASE WHEN SUBSTRING_INDEX(themes, ',', 3) = SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 4), ',', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 4), ', ', -1) END theme4
+FROM general_anime_info) foo
+WHERE theme4 != 'N/A');
+
+CREATE TABLE theme5(
+SELECT id, theme5
+FROM (
+SELECT id, themes, CASE WHEN SUBSTRING_INDEX(themes, ',', 4) = SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 5), ',', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 5), ', ', -1) END theme5
+FROM general_anime_info) foo
+WHERE theme5 != 'N/A');
+
+CREATE TABLE theme6(
+SELECT id, theme6
+FROM (
+SELECT id, themes, CASE WHEN SUBSTRING_INDEX(themes, ',', 5) = SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 6), ',', -1) THEN 'N/A' ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(themes, ',', 6), ', ', -1) END theme6
+FROM general_anime_info) foo
+WHERE theme6 != 'N/A');
+
+CREATE TABLE IF NOT EXISTS Themes (
+SELECT id, theme Themes FROM theme1
+UNION
+SELECT * FROM theme2
+UNION
+SELECT * FROM theme3
+UNION
+SELECT * FROM theme4
+UNION
+SELECT * FROM theme5
+UNION
+SELECT * FROM theme6);
+
+DROP TABLE theme1, theme2, theme3, theme4, theme5, theme6;
