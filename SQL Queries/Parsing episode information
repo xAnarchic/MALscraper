@@ -1,0 +1,80 @@
+CREATE TABLE IF NOT EXISTS title_fixes (
+SELECT jp_title, episode, REPLACE(episode_title, '\n', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, '\\', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, ')', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, '(', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, '.', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, ',', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, ']', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, '[', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, '"', '') episode_title, episode_score, episode_date_aired
+FROM (
+SELECT jp_title, episode, REPLACE(episode_title, '\'', '') episode_title, episode_score, episode_date_aired
+FROM episode_anime_info) single_quote) double_quote) square_brackets) commas) periods) idk) idk2) idk3) idk4
+WHERE episode_score != 'N/A'
+);
+
+
+CREATE TABLE IF NOT EXISTS pre_parsed_episode_info (
+SELECT jp_title, episode_num, ep_score, ep_date, ep_title
+FROM title_fixes
+JOIN JSON_TABLE(
+    CONCAT('["', REPLACE(episode, '-', '","'), '"]'), 
+    '$[*]' COLUMNS (
+		ep_num FOR ORDINALITY,
+        episode_num VARCHAR(255) PATH '$'
+    )
+) jt_episode
+JOIN JSON_TABLE(
+    CONCAT('["', REPLACE(episode_score, '-', '","'), '"]'), 
+    '$[*]' COLUMNS (
+		score_num FOR ORDINALITY,
+        ep_score VARCHAR(255) PATH '$'
+    )
+) jt_score
+JOIN JSON_TABLE(
+    CONCAT('["', REPLACE(episode_date_aired, '-', '","'), '"]'), 
+    '$[*]' COLUMNS (
+		date_num FOR ORDINALITY,
+        ep_date VARCHAR(255) PATH '$'
+    )
+) jt_date
+JOIN JSON_TABLE(
+    CONCAT('["', REPLACE(episode_title, '---', '","'), '"]'), 
+    '$[*]' COLUMNS (
+		title_num FOR ORDINALITY,
+        ep_title VARCHAR(255) PATH '$'
+    )
+) jt_title
+WHERE ep_num = score_num
+AND score_num = date_num
+AND date_num = title_num
+AND ep_score != 'N/A'
+);
+
+CREATE TABLE IF NOT EXISTS parsed_episode_info (
+SELECT id, episode_num, ep_score, ep_date, ep_title
+FROM titles t
+RIGHT JOIN pre_parsed_episode_info p ON t.jp_title = p.jp_title);
+
+DROP TABLE pre_parsed_episode_info;
+
+DROP TABLE title_fixes;
+
+ALTER TABLE parsed_episode_info
+ADD CONSTRAINT fk_epinfo_id
+FOREIGN KEY(id) REFERENCES titles(id);
+
+ALTER TABLE parsed_episode_info
+MODIFY COLUMN episode_num INT;
+
+ALTER TABLE parsed_episode_info
+MODIFY COLUMN ep_score FLOAT;
