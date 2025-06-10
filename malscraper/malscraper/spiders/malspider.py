@@ -9,6 +9,8 @@ import time
 from scrapy import signals
 
 from scrapy import Request
+from scrapy.exceptions import CloseSpider
+from scrapy.settings.default_settings import CLOSESPIDER_ITEMCOUNT
 
 
 class MALSpider(scrapy.Spider):
@@ -26,10 +28,16 @@ class MALSpider(scrapy.Spider):
 
     def item_scraped(self, item):
         self.item_count += 1
-        if self.item_count % 30 == 0:
-            self.logger.info(f'Pausing job... scrape count is currently: {self.item_count}')
+        if self.item_count % 50 == 0:
+            self.logger.info(f'Pausing job... scrape count is currently: {self.item_count}... shows scraped is currently: {round(self.item_count/2)}')
             self.crawler.engine.pause()
-            time.sleep(30)
+            time.sleep(60)
+            self.crawler.engine.unpause()
+            self.logger.info('Resuming job... :)')
+        if self.item_count % 150 == 0:
+            self.logger.info(f'Pausing job... scrape count is currently: ... shows scraped is currently: {round(self.item_count/2)}')
+            self.crawler.engine.pause()
+            time.sleep(120)
             self.crawler.engine.unpause()
             self.logger.info('Resuming job... :)')
 
@@ -44,12 +52,22 @@ class MALSpider(scrapy.Spider):
 
         next_page = response.css('div.di-b.ac.pt16.pb16.pagination.icon-top-ranking-page-bottom a::attr(href)').getall()[-1]  # specifically gets the link to the next page of anime, avoids the "prev page" link
         next_page_url = 'https://myanimelist.net/topanime.php' + next_page
+        #termination_identifier = len(response.css('div.di-b.ac.pt16.pb16.pagination.icon-top-ranking-page-bottom a::attr(href)').getall())     #checks for the nav buttons on page
 
 
-        if next_page != '?limit=1000':
+        #if termination_identifier == 2 or next_page == '?limit=50':
+
+        if next_page != '?limit=100' :
             yield response.follow(url = next_page_url, callback = self.parse)
-        elif self.item_count == 3000:
-            sys.exit()
+            if self.item_count == 200:
+                print(f'100 anime were successfully scraped. Reached: {next_page}')
+                raise CLOSESPIDER_ITEMCOUNT()
+            elif self.item_count > 200:
+                print(f'Script began to over-scrape. Reached: {next_page}')
+                raise CloseSpider()
+
+        # elif self.item_count == 50:
+        #     raise CloseSpider(f'{self.item_count} items were scraped in this session.')
 
 
 

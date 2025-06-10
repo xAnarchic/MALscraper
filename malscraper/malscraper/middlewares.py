@@ -4,6 +4,7 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import random
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
@@ -101,3 +102,9 @@ class MalscraperDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+
+
+class DebugUserAgentMiddleware:
+    def process_request(self, request, spider):
+        spider.logger.info(f"Using User-Agent: {request.headers.get('User-Agent')}")
+        return None

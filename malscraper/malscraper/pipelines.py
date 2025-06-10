@@ -112,7 +112,7 @@ class MalscraperPipeline:
         else:
             adapter['episode'] = '-'.join(adapter.get('episode'))
             adapter['episode_score'] = '-'.join(adapter.get('episode_score'))
-            adapter['episode_title'] = '-'.join(adapter.get('episode_title'))
+            adapter['episode_title'] = '---'.join(adapter.get('episode_title'))
 
         return item
 
@@ -122,20 +122,20 @@ class ImportToMySQLPipeline:
         self.connection = mysql.connector.connect(
             host = 'localhost',
             user = 'root',
-            password = 'ShadowHunter44!12',
-            database = 'malanime'
+            password = '',      # enter account password
+            database = ''   # enter name of database
         )
 
         self.cursor = self.connection.cursor()
 
         self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS anime_test2(
+            CREATE TABLE IF NOT EXISTS general_anime_info(
                 id int NOT NULL auto_increment,
                 jp_title VARCHAR(255),
                 eng_title VARCHAR(255),
                 episode_num VARCHAR(255),
                 show_type VARCHAR(255),
-                score FLOAT,
+                score TEXT,
                 ranking INT,
                 popularity INT,
                 studio VARCHAR(255),
@@ -148,7 +148,7 @@ class ImportToMySQLPipeline:
                 )""")
 
         self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS anime_episode(
+            CREATE TABLE IF NOT EXISTS episode_anime_info(
                 jp_title VARCHAR(255),
                 episode TEXT,
                 episode_title TEXT,
@@ -167,7 +167,7 @@ class ImportToMySQLPipeline:
     def sql_mal(self, item, spider):
 
         self.cursor.execute("""
-                        INSERT into anime_test2(
+                        INSERT into general_anime_info(
                             jp_title,
                             eng_title,
                             episode_num,
@@ -205,7 +205,7 @@ class ImportToMySQLPipeline:
     def sql_mal1(self, item, spider):
 
         self.cursor.execute("""
-                         INSERT into anime_episode(
+                         INSERT into episode_anime_info(
                              jp_title,
                              episode,
                              episode_title,

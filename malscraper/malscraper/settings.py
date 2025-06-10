@@ -13,16 +13,14 @@ SPIDER_MODULES = ["malscraper.spiders"]
 NEWSPIDER_MODULE = "malscraper.spiders"
 
 # FEEDS = {
-#    'malanime.csv' : {'format' : 'csv', 'overwrite' : True}
 # }
 
-# SCRAPEOPS_API_KEY = 'aa6d77f5-6e12-47ac-bb2e-3e99d269ffa5'
+# SCRAPEOPS_API_KEY = ''      # can enter when trying to rotate request headers + ip to scrape many pages automatically
 # SCRAPEOPS_PROXY_ENABLED = True
 # SCRAPEOPS_PROXY_SETTINGS = {'country' : 'gb'}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "malscraper (+http://www.yourdomain.com)"
-#USER_AGENT = "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36"
+USER_AGENT = "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; http://www.google.com/bot.html) Chrome/W.X.Y.Z‡ Safari/537.36"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -52,9 +50,9 @@ COOKIES_ENABLED = False
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
+SPIDER_MIDDLEWARES = {
 #    "malscraper.middlewares.MalscraperSpiderMiddleware": 543,
-#}
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
@@ -62,6 +60,7 @@ COOKIES_ENABLED = False
 DOWNLOADER_MIDDLEWARES = {
 #   "malscraper.middlewares.MalscraperDownloaderMiddleware": 543,
 #   "scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk": 725
+   "malscraper.middlewares.DebugUserAgentMiddleware": 500
 }
 
 # Enable or disable extensions
@@ -74,7 +73,6 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    "malscraper.pipelines.MalscraperPipeline": 300,
-  # "malscraper.pipelines.Malscraper1Pipeline": 400,
    "malscraper.pipelines.ImportToMySQLPipeline": 500,
 }
 
