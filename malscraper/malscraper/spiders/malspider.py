@@ -17,7 +17,7 @@ class MALSpider(scrapy.Spider):
     name = 'malspider'
     item_count = 0
     allowed_domains = ['myanimelist.net', 'proxy.scrapeops.io']
-    start_urls = ['https://myanimelist.net/topanime.php']   # orders all anime on the website by score
+    start_urls = ['https://myanimelist.net/topanime.php']
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
@@ -65,9 +65,6 @@ class MALSpider(scrapy.Spider):
             elif self.item_count > 200:
                 print(f'Script began to over-scrape. Reached: {next_page}')
                 raise CloseSpider()
-
-        # elif self.item_count == 50:
-        #     raise CloseSpider(f'{self.item_count} items were scraped in this session.')
 
 
 
