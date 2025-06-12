@@ -1,3 +1,5 @@
+Creating a table with the titles of the show (JP and ENG) and a primary key.
+1) 
 CREATE TABLE titles (
 SELECT id, jp_title, eng_title
 FROM general_anime_info);
@@ -5,6 +7,9 @@ FROM general_anime_info);
 ALTER TABLE titles
 ADD PRIMARY KEY (id);
 
+
+Creating a table with a foreign key to the main titles table, number of episodes in the show, the type of show and name of the studio that created the show.
+2)
 CREATE TABLE show_info (
 SELECT id, episode_num, show_type, studio
 FROM general_anime_info);
@@ -13,6 +18,9 @@ ALTER TABLE show_info
 ADD CONSTRAINT fk_info_id
 FOREIGN KEY(id) REFERENCES titles(id);
 
+
+Creating a table with a foreign key to the main titles table and show demographic.
+3)
 CREATE TABLE demographics (
 SELECT id, demographics
 FROM general_anime_info);
@@ -21,6 +29,9 @@ ALTER TABLE demographics
 ADD CONSTRAINT fk_demo_id
 FOREIGN KEY(id) REFERENCES titles(id);
 
+
+Creating a table with a foreign key to the main titles table, as well as the score, rank and popularity of the show.
+4)
 CREATE TABLE show_stats (
 SELECT id, score, ranking, popularity
 FROM general_anime_info);
@@ -29,6 +40,9 @@ ALTER TABLE show_stats
 ADD CONSTRAINT fk_stats_id
 FOREIGN KEY (id) REFERENCES titles(id);
 
+
+Creating multiple tables with a foreign key to the main titles table, as well as a separated genre based on its position within the initial list of genres. 8 of these tables were created as the highest number of genres found associated with any single show was 8.
+5)
 CREATE TABLE genre1(
 SELECT id, genre1
 FROM (
@@ -85,6 +99,9 @@ SELECT id, genres, CASE WHEN SUBSTRING_INDEX(genres, ', ', 7) = SUBSTRING_INDEX(
 FROM general_anime_info) foo
 WHERE genre8 != 'N/A'); 
 
+
+Creating a table where all the inidividual genre tables are joined. Once this final table is created, the individual genre tables are deleted.
+6)
 CREATE TABLE IF NOT EXISTS genres (
 SELECT id, genre1 Genres FROM genre1
 UNION 
@@ -104,6 +121,9 @@ SELECT * FROM genre8);
 
 DROP TABLE genre1, genre2, genre3, genre4, genre5, genre6, genre7, genre8;
 
+
+Creating multiple tables with a foreign key to the main titles table, as well as a separated theme based on its position within the initial list of themes. 6 of these tables were created as the highest number of themes found associated with any single show was 6.
+7)
 CREATE TABLE theme1(
 SELECT id, theme
 FROM (
@@ -146,6 +166,9 @@ SELECT id, themes, CASE WHEN SUBSTRING_INDEX(themes, ',', 5) = SUBSTRING_INDEX(S
 FROM general_anime_info) foo
 WHERE theme6 != 'N/A');
 
+
+Creating a table where all the inidividual theme tables are joined. Once this final table is created, the individual theme tables are deleted.
+8)
 CREATE TABLE IF NOT EXISTS Themes (
 SELECT id, theme Themes FROM theme1
 UNION
