@@ -1,3 +1,6 @@
+Remaking the "episode_anime_info" table where the "episode_title" has various punctuation removed. This is to help the separation of the episode titles when using the JSON_TABLE function as the presence of punctuation in the initial list of episode titles
+can induce errors.
+1)
 CREATE TABLE IF NOT EXISTS title_fixes (
 SELECT jp_title, episode, REPLACE(episode_title, '\n', '') episode_title, episode_score, episode_date_aired
 FROM (
@@ -18,11 +21,13 @@ FROM (
 SELECT jp_title, episode, REPLACE(episode_title, '"', '') episode_title, episode_score, episode_date_aired
 FROM (
 SELECT jp_title, episode, REPLACE(episode_title, '\'', '') episode_title, episode_score, episode_date_aired
-FROM episode_anime_info) single_quote) double_quote) square_brackets) commas) periods) idk) idk2) idk3) idk4
+FROM episode_anime_info) single_quote) double_quote) square_bracket1) square_bracket2) comma) period) bracket1) bracket2) backslash
 WHERE episode_score != 'N/A'
 );
 
 
+Using the JSON_TABLE function to separate the comma-delimited and hypen-delimited lists into individual rows. This process is only applied to shows with multiple episodes and thus warrant the separation.
+2) 
 CREATE TABLE IF NOT EXISTS pre_parsed_episode_info (
 SELECT jp_title, episode_num, ep_score, ep_date, ep_title
 FROM title_fixes
@@ -60,6 +65,9 @@ AND date_num = title_num
 AND ep_score != 'N/A'
 );
 
+
+Adding the id onto the table created in query 2 (with a foreign key constraint), deleting unnecessary tables and changing the data type of some columns now that they've been separated.
+3)
 CREATE TABLE IF NOT EXISTS parsed_episode_info (
 SELECT id, episode_num, ep_score, ep_date, ep_title
 FROM titles t
